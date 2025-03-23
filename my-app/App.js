@@ -3,10 +3,12 @@ import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { MaterialIcons, FontAwesome, Entypo } from "@expo/vector-icons";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import Body from "./Components/body"; 
+import { MaterialIcons, FontAwesome, Ionicons, Feather } from "@expo/vector-icons";
+
+import Body from "./Components/body";
 import ScanScreenComponent from "./Components/ScanScreen";
+import PaymentScreen from "./Components/PaymentScreen";
+import SuccessScreen from "./Components/SuccessScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -24,6 +26,8 @@ function HomeStack() {
     >
       <Stack.Screen name="HomeScreen" component={PlaceholderScreen} />
       <Stack.Screen name="ScanScreen" component={ScanScreenComponent} />
+      <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="Success" component={SuccessScreen} />
     </Stack.Navigator>
   );
 }
@@ -33,54 +37,62 @@ export default function App() {
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
-          headerShown: false, // Hide headers for all tab screens
+          headerShown: false,
+          tabBarStyle: styles.tabBar,
           tabBarIcon: ({ focused }) => {
-            let iconName;
-            let IconComponent = MaterialIcons;
+            const backgroundColor = focused ? "#D0EDFB" : "#fff";
+            const iconColor = focused ? "#2DC0FF" : "#BBBB";
 
             if (route.name === "Home") {
-              iconName = "home";
-            } else if (route.name === "Notification") {
-              IconComponent = FontAwesome;
-              iconName = "bell";
-            } else if (route.name === "Scan") {
               return (
-                <View
-                  style={[
-                    styles.iconContainer,
-                    { backgroundColor: focused ? "#D0EDFB" : "#fff" },
-                  ]}
-                >
-                  <Ionicons
-                    name="scan-sharp"
-                    size={30}
-                    color={focused ? "#2DC0FF" : "#BBBB"}
-                  />
+                <View style={[styles.iconContainer, { backgroundColor }]}>
+                  <MaterialIcons name="home" size={25} color={iconColor} />
+                </View>
+              );
+            } 
+            
+            if (route.name === "Scan") {
+              return (
+                <View style={[styles.iconContainer, { backgroundColor }]}>
+                  <Ionicons name="scan-sharp" size={25} color={iconColor} />
+                </View>
+              );
+            } 
+            
+            if (route.name === "Notification") {
+              return (
+                <View style={[styles.iconContainer, { backgroundColor }]}>
+                  <FontAwesome name="bell" size={25} color={iconColor} />
+                </View>
+              );
+            } 
+            
+            if (route.name === "Payment") {
+              return (
+                <View style={[styles.iconContainer, { backgroundColor }]}>
+                  <Feather name="credit-card" size={25} color={iconColor} />
+                </View>
+              );
+            } 
+            
+            if (route.name === "Success") {
+              return (
+                <View style={[styles.iconContainer, { backgroundColor }]}>
+                  <Feather name="check-circle" size={25} color={iconColor} />
                 </View>
               );
             }
 
-            return (
-              <View
-                style={[
-                  styles.iconContainer,
-                  { backgroundColor: focused ? "#D0EDFB" : "#fff" },
-                ]}
-              >
-                <IconComponent
-                  name={iconName}
-                  size={30}
-                  color={focused ? "#2DC0FF" : "#BBBB"}
-                />
-              </View>
-            );
+            return null;
           },
           tabBarShowLabel: false,
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Notification" component={PlaceholderScreen} />
         <Tab.Screen name="Scan" component={ScanScreenComponent} />
+        <Tab.Screen name="Notification" component={PlaceholderScreen} />
+        <Tab.Screen name="Payment" component={PaymentScreen} />
+        <Tab.Screen name="Success" component={SuccessScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
@@ -100,7 +112,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "flex-start",
-    paddingTop: "8%",
+    paddingTop: 20,
     borderWidth: 0.5,
   },
   iconContainer: {
